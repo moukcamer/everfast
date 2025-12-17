@@ -1,0 +1,390 @@
+{% extends 'Fango/base.html' %}
+
+{% block title %}À propos - Fango{% endblock %}
+
+{% block styles %}
+<style>
+    /* Styles spécifiques pour la page À propos */
+    .about-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+    }
+    
+    .about-hero h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .about-hero p {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.9;
+    }
+    
+    .about-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    .mission-vision {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+    
+    .mission-card, .vision-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border-top: 4px solid #667eea;
+    }
+    
+    .mission-card h3, .vision-card h3 {
+        color: #333;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .team-section {
+        margin: 4rem 0;
+    }
+    
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .team-member {
+        text-align: center;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s;
+    }
+    
+    .team-member:hover {
+        transform: translateY(-5px);
+    }
+    
+    .team-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+    }
+    
+    .team-name {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+    
+    .team-role {
+        color: #667eea;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .values-section {
+        background: #f8f9fa;
+        padding: 3rem;
+        border-radius: 10px;
+        margin: 3rem 0;
+    }
+    
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .value-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .value-icon {
+        font-size: 2rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+    
+    .timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 3rem auto;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #667eea;
+        transform: translateX(-50%);
+    }
+    
+    .timeline-item {
+        margin: 2rem 0;
+        position: relative;
+    }
+    
+    .timeline-content {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        width: calc(50% - 30px);
+        position: relative;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-left: auto;
+    }
+    
+    .timeline-year {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #667eea;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-year {
+        right: calc(50% + 20px);
+    }
+    
+    .timeline-item:nth-child(even) .timeline-year {
+        left: calc(50% + 20px);
+    }
+    
+    @media (max-width: 768px) {
+        .timeline::before {
+            left: 20px;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 60px);
+            margin-left: 60px !important;
+        }
+        
+        .timeline-year {
+            left: 0 !important;
+            right: auto !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Section Hero -->
+    <div class="about-hero">
+        <h1>À propos de Fango</h1>
+        <p>Découvrez notre histoire, notre mission et l'équipe passionnée derrière notre plateforme multimédia innovante.</p>
+    </div>
+
+    <div class="about-content">
+        <!-- Notre Histoire -->
+        <section class="story-section">
+            <h2><i class="fas fa-book-open"></i> Notre Histoire</h2>
+            <p>
+                Fango est né d'une passion pour le partage de contenu multimédia de qualité. 
+                Fondé en 2024, notre projet a commencé comme une simple idée entre développeurs 
+                passionnés et s'est transformé en une plateforme complète dédiée à l'audio et la vidéo.
+            </p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content">
+                        <h4>Lancement de Fango</h4>
+                        <p>Création de la première version avec support audio/vidéo</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2025</div>
+                    <div class="timeline-content">
+                        <h4>Expansion des fonctionnalités</h4>
+                        <p>Ajout des téléchargements, galeries et API</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission & Vision -->
+        <div class="mission-vision">
+            <div class="mission-card">
+                <h3><i class="fas fa-bullseye"></i> Notre Mission</h3>
+                <p>
+                    Fournir une plateforme accessible et intuitive pour le partage 
+                    et la découverte de contenu audio et vidéo de qualité. 
+                    Nous croyons au pouvoir des médias pour connecter les gens et 
+                    partager des idées.
+                </p>
+            </div>
+            
+            <div class="vision-card">
+                <h3><i class="fas fa-eye"></i> Notre Vision</h3>
+                <p>
+                    Devenir la référence en matière de plateforme multimédia 
+                    open-source, en offrant des outils innovants pour créateurs 
+                    et consommateurs de contenu audiovisuel.
+                </p>
+            </div>
+        </div>
+
+        <!-- Nos Valeurs -->
+        <section class="values-section">
+            <h2 style="text-align: center;"><i class="fas fa-heart"></i> Nos Valeurs</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Transparence</h4>
+                    <p>Open-source et code accessible à tous</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Communauté</h4>
+                    <p>Priorité aux besoins des utilisateurs</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p>Recherche constante d'amélioration</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h4>Sécurité</h4>
+                    <p>Protection des données et vie privée</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notre Équipe -->
+        <section class="team-section">
+            <h2><i class="fas fa-users"></i> Notre Équipe</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-name">Alex Martin</div>
+                    <div class="team-role">Fondateur & Développeur Principal</div>
+                    <p>Passionné de Django et de multimédia</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-name">Sarah Dubois</div>
+                    <div class="team-role">Designer UI/UX</div>
+                    <p>Créatrice de l'expérience utilisateur</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-name">Thomas Leroy</div>
+                    <div class="team-role">Développeur Backend</div>
+                    <p>Spécialiste bases de données et API</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-name">Marie Lambert</div>
+                    <div class="team-role">Responsable Contenu</div>
+                    <p>Gestion des médias et communauté</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technologies utilisées -->
+        <section style="margin: 4rem 0;">
+            <h2><i class="fas fa-code"></i> Technologies Utilisées</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
+                <span style="background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fab fa-python"></i> Django
+                </span>
+                <span style="background: #38b2ac; color: white; padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fab fa-html5"></i> HTML5
+                </span>
+                <span style="background: #4299e1; color: white; padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fab fa-css3-alt"></i> CSS3
+                </span>
+                <span style="background: #f6e05e; color: #333; padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fab fa-js"></i> JavaScript
+                </span>
+                <span style="background: #68d391; color: white; padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fas fa-database"></i> SQLite
+                </span>
+            </div>
+        </section>
+
+        <!-- Statistiques -->
+        <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: white; padding: 2rem; border-radius: 10px; text-align: center;">
+            <h2>Fango en Chiffres</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+                       gap: 2rem; margin-top: 2rem;">
+                <div>
+                    <h3 style="font-size: 2.5rem; margin: 0;">500+</h3>
+                    <p>Utilisateurs actifs</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 2.5rem; margin: 0;">1K+</h3>
+                    <p>Médias partagés</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 2.5rem; margin: 0;">99.9%</h3>
+                    <p>Temps de disponibilité</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 2.5rem; margin: 0;">24/7</h3>
+                    <p>Support disponible</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

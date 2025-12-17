@@ -1,0 +1,29 @@
+<!-- templates/Fango/upload_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Media</title>
+</head>
+<body>
+    <h1>Upload de Média</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            <label>Titre:</label>
+            <input type="text" name="title">
+        </p>
+        <p>
+            <label>Type:</label>
+            <select name="media_type">
+                <option value="video">Vidéo</option>
+                <option value="audio">Audio</option>
+            </select>
+        </p>
+        <p>
+            <label>Fichier:</label>
+            <input type="file" name="media_file">
+        </p>
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>

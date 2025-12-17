@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<!-- Dans le header de base.html -->
+<header>
+    <nav>
+        <div class="logo">
+            <h1><a href="{% url 'accueil' %}" style="color: white; text-decoration: none;">Fango</a></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'apropos' %}">À propos</a></li>  <!-- ⬅️ AJOUT -->
+            <li><a href="{% url 'contact' %}">Contact</a></li>    <!-- ⬅️ AJOUT -->
+        </ul>
+    </nav>
+</header>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {% block styles %}{% endblock %}
+
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mon Site Django. Tous droits réservés.</p>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
