@@ -1,0 +1,69 @@
+# Créer le fichier .gitignore
+echo "# Django
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Database
+*.sqlite3
+*.db
+*.sql
+
+# Django media
+media/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Temp files
+*.log
+*.tmp
+*.temp
+
+# Coverage
+.coverage
+htmlcov/
+
+# Pytest
+.pytest_cache/
+
+# Virtual environment
+venv/
+ENV/
+
+# Static files (générés par collectstatic)
+staticfiles/
+
+# Secrets
+secrets.json
+" > .gitignore

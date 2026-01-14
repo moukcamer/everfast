@@ -1,36 +1,244 @@
 <!DOCTYPE html>
 <html lang="fr">
 {% load static %}
-<!-- Dans le header de base.html -->
-<header>
-    <nav>
-        <div class="logo">
-            <h1><a href="{% url 'accueil' %}" style="color: white; text-decoration: none;">Fango</a></h1>
-        </div>
-        <ul class="nav-links">
-            <li><a href="{% url 'accueil' %}">Accueil</a></li>
-            <li><a href="{% url 'apropos' %}">À propos</a></li>  <!-- ⬅️ AJOUT -->
-            <li><a href="{% url 'contact' %}">Contact</a></li>    <!-- ⬅️ AJOUT -->
-        </ul>
-    </nav>
-</header>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Construcam-Everfast{% endblock %}</title>
     
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Styles de base -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header/Navigation */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-links a:hover {
+            background: #f8f9fa;
+            color: #667eea;
+        }
+        
+        .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Main content */
+        main {
+            min-height: 70vh;
+            padding: 2rem 0;
+        }
+        
+        /* Footer */
+        footer {
+            background: white;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #adb5bd;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #495057;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+    
     {% block styles %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="{% url 'accueil' %}" class="logo">
+                <i class="fas fa-newspaper"></i>
+                Construcam-Everfast
+            </a>
+            
+            <nav class="nav-links">
+                <a href="{% url 'accueil' %}" class="{% if request.path == '/' %}active{% endif %}">
+                     <i class="fas fa-home"></i> Accueil
+                </a>
+                <a href="{% url 'article_list' %}" class="{% if 'articles' in request.path %}active{% endif %}">
+                     <i class="fas fa-newspaper"></i> Articles
+                </a>
+                <a href="{% url 'image_gallery' %}" class="{% if 'images' in request.path or 'image' in request.path %}active{% endif %}">
+                    <i class="fas fa-images"></i> Images
+                </a>
+                <a href="{% url 'apropos' %}">
+                    <i class="fas fa-info-circle"></i> À propos
+                </a>
+                <a href="{% url 'contact' %}">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+                <a href="{% url 'article_create' %}">
+                     <i class="fas fa-plus"></i> Créer
+                </a>
+                {% if user.is_authenticated %}
+                <a href="/admin/">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
 
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
+    <!-- Main Content -->
     <main>
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Mon Site Django. Tous droits réservés.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Construcam-Everfast</h3>
+                    <p>Plateforme de contenu multimédia. Partagez vos articles, images, vidéos et audios.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'article_list' %}">Articles</a></li>
+                        <li><a href="{% url 'image_gallery' %}">Galerie d'images</a></li>
+                        <li><a href="{% url 'article_create' %}">Créer un article</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Ressources</h3>
+                    <ul>
+                        <li><a href="/admin/">Interface d'administration</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Mon Site Construcam-Everfast. Tous droits réservés.</p>
+            </div>
+        </div>
     </footer>
 
-    <script src="{% static 'js/script.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
+
+
+    

@@ -56,7 +56,9 @@ ROOT_URLCONF = 'everfast.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,12 +118,38 @@ USE_TZ = True
 # BASE_DIR doit être défini
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
+# Configuration des médias
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Dossiers spécifiques
+MEDIA_DIRECTORIES = {
+    'ARTICLES_IMAGES': 'articles/images/',
+    'ARTICLES_VIDEOS': 'articles/videos/',
+    'ARTICLES_AUDIOS': 'articles/audios/',
+    'IMAGES': 'images/',
+}
+
+# Formats acceptés
+ALLOWED_FILE_EXTENSIONS = {
+    'images': ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'],
+    'videos': ['.mp4', '.webm', '.mov', '.avi', '.mkv'],
+    'audios': ['.mp3', '.wav', '.ogg', '.m4a', '.flac'],
+}
+
+# Taille maximale (en octets)
+MAX_UPLOAD_SIZE = {
+    'image': 5 * 1024 * 1024,  # 5MB
+    'video': 100 * 1024 * 1024,  # 100MB
+    'audio': 50 * 1024 * 1024,  # 50MB
+}
+
+# Créer le dossier par défaut
+DEFAULT_PROFILE_PHOTO = 'equipe/photos/default-avatar.png'
+
+# Taille maximale pour les uploads
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024   # 5MB pour les images
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -130,5 +158,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+ROOT_URLCONF = 'Fango.urls'

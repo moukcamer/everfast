@@ -1,0 +1,394 @@
+<!-- templates/Fango/admin/equipe_upload.html -->
+{% extends 'Fango/base.html' %}
+
+{% block title %}Ajouter un membre d'équipe - Fango{% endblock %}
+
+{% block styles %}
+<style>
+    .upload-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .preview-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .photo-preview {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin: 0 auto;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 3px solid #667eea;
+        position: relative;
+    }
+    
+    .photo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .upload-btn-custom {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+        margin-top: 10px;
+        transition: background 0.3s;
+    }
+    
+    .upload-btn-custom:hover {
+        background: #5a67d8;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .role-selector {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    
+    .role-option {
+        padding: 8px 16px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .role-option.active {
+        background: #667eea;
+        color: white;
+    }
+    
+    .crop-controls {
+        margin-top: 10px;
+    }
+    
+    .alert {
+        padding: 12px;
+        border-radius: 5px;
+        margin: 10px 0;
+        display: none;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="upload-container">
+        <h1><i class="fas fa-user-plus"></i> 
+            {% if membre_id %}Modifier un membre{% else %}Ajouter un membre d'équipe{% endif %}
+        </h1>
+        
+        <!-- Messages -->
+        <div id="messageContainer"></div>
+        
+        <!-- Prévisualisation de la photo -->
+        <div class="preview-container">
+            <div class="photo-preview" id="photoPreview">
+                <i class="fas fa-user" style="font-size: 4rem; color: #ccc;"></i>
+            </div>
+            
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+            
+            <div>
+                <button type="button" class="upload-btn-custom" onclick="document.getElementById('photoInput').click()">
+                    <i class="fas fa-camera"></i> Choisir une photo
+                </button>
+            </div>
+            
+            <div class="crop-controls" id="cropControls" style="display: none;">
+                <button type="button" onclick="cropImage()" class="upload-btn-custom">
+                    <i class="fas fa-crop"></i> Recadrer
+                </button>
+            </div>
+        </div>
+        
+        <!-- Formulaire -->
+        <form method="post" enctype="multipart/form-data" id="memberForm">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prénom *</label>
+                    <input type="text" name="prenom" required class="form-control" 
+                           placeholder="Prénom du membre" id="prenomInput"
+                           value="{% if membre %}{{ membre.prenom }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label>Nom *</label>
+                    <input type="text" name="nom" required class="form-control" 
+                           placeholder="Nom du membre" id="nomInput"
+                           value="{% if membre %}{{ membre.nom }}{% endif %}">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Rôle *</label>
+                    <div class="role-selector">
+                        {% for value, label in role_choices %}
+                        <div class="role-option {% if membre and membre.role == value or not membre and value == 'dev' %}active{% endif %}" 
+                             data-value="{{ value }}" onclick="selectRole(this)">
+                            {{ label }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="role" id="roleInput" 
+                           value="{% if membre %}{{ membre.role }}{% else %}dev{% endif %}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" 
+                           placeholder="email@exemple.com" id="emailInput"
+                           value="{% if membre %}{{ membre.email }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="text" name="telephone" class="form-control" 
+                           placeholder="+33 1 23 45 67 89" id="telephoneInput"
+                           value="{% if membre %}{{ membre.telephone }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label>LinkedIn</label>
+                    <input type="url" name="linkedin" class="form-control" 
+                           placeholder="https://linkedin.com/in/..." id="linkedinInput"
+                           value="{% if membre %}{{ membre.linkedin }}{% endif %}">
+                </div>
+                
+                <div class="form-group">
+                    <label>GitHub</label>
+                    <input type="url" name="github" class="form-control" 
+                           placeholder="https://github.com/..." id="githubInput"
+                           value="{% if membre %}{{ membre.github }}{% endif %}">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" rows="4" 
+                              placeholder="Description du membre..." id="descriptionInput">{% if membre %}{{ membre.description }}{% endif %}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ordre d'affichage</label>
+                    <input type="number" name="ordre_affichage" class="form-control" 
+                           value="{% if membre %}{{ membre.ordre_affichage }}{% else %}0{% endif %}" min="0" id="ordreInput">
+                </div>
+                
+                <div class="form-group">
+                    <label>Statut</label>
+                    <div style="margin-top: 10px;">
+                        <input type="checkbox" name="actif" id="actifInput" 
+                               {% if not membre or membre.actif %}checked{% endif %} style="margin-right: 10px;">
+                        <span>Afficher dans l'équipe</span>
+                    </div>
+                </div>
+                
+                <!-- Champ photo caché pour le formulaire -->
+                <input type="hidden" name="photo_profil" id="photoData">
+                <input type="hidden" name="membre_id" value="{{ membre_id }}">
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-save"></i> 
+                    {% if membre_id %}Mettre à jour{% else %}Enregistrer le membre{% endif %}
+                </button>
+                <a href="{% url 'apropos' %}" class="media-btn" style="margin-left: 10px;">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bibliothèque pour le recadrage -->
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css">
+
+<script>
+let cropper = null;
+let selectedPhoto = null;
+
+// Fonction pour sélectionner un rôle
+function selectRole(element) {
+    document.querySelectorAll('.role-option').forEach(o => o.classList.remove('active'));
+    element.classList.add('active');
+    document.getElementById('roleInput').value = element.dataset.value;
+}
+
+// Gestion de la sélection de photo
+document.getElementById('photoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        showMessage('Veuillez sélectionner une image', 'error');
+        return;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) {
+        showMessage('La photo ne doit pas dépasser 5MB', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        selectedPhoto = e.target.result;
+        
+        // Afficher l'image dans le prévisualiseur
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = `<img id="previewImage" src="${selectedPhoto}" alt="Prévisualisation">`;
+        
+        // Initialiser le recadrage
+        const image = document.getElementById('previewImage');
+        if (cropper) {
+            cropper.destroy();
+        }
+        
+        cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 1,
+            autoCropArea: 0.8,
+            responsive: true,
+            background: false
+        });
+        
+        // Afficher les contrôles de recadrage
+        document.getElementById('cropControls').style.display = 'block';
+    };
+    
+    reader.readAsDataURL(file);
+});
+
+// Fonction pour recadrer l'image
+function cropImage() {
+    if (!cropper) return;
+    
+    const canvas = cropper.getCroppedCanvas({
+        width: 500,
+        height: 500
+    });
+    
+    // Mettre à jour la prévisualisation
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = `<img src="${canvas.toDataURL('image/jpeg', 0.9)}" alt="Photo recadrée">`;
+    
+    // Sauvegarder l'image recadrée dans le champ caché
+    document.getElementById('photoData').value = canvas.toDataURL('image/jpeg', 0.9);
+    
+    // Détruire le cropper
+    cropper.destroy();
+    cropper = null;
+    
+    // Cacher les contrôles de recadrage
+    document.getElementById('cropControls').style.display = 'none';
+}
+
+// Fonction pour afficher des messages
+function showMessage(text, type = 'success') {
+    const container = document.getElementById('messageContainer');
+    container.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+    container.style.display = 'block';
+    
+    setTimeout(() => {
+        container.style.display = 'none';
+    }, 5000);
+}
+
+// Gestion de la soumission du formulaire
+document.getElementById('memberForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+    submitBtn.disabled = true;
+    
+    const formData = new FormData(this);
+    const isEdit = "{{ membre_id }}" !== "";
+    
+    // Déterminer l'URL d'envoi
+    const url = isEdit ? "{% url 'edit_photo_equipe' membre_id %}" : "{% url 'upload_photo_equipe' %}";
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showMessage(data.message, 'success');
+            setTimeout(() => {
+                window.location.href = "{% url 'apropos' %}";
+            }, 1500);
+        } else {
+            showMessage('Erreur: ' + data.error, 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        showMessage('Erreur réseau: ' + error.message, 'error');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+</script>
+{% endblock %}

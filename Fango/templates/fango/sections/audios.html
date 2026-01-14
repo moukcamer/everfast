@@ -1,0 +1,156 @@
+{% extends 'Fango/base.html' %}
+
+
+
+{% block title %}Audios - Fango{% endblock %}
+
+{% block styles %}
+<style>
+    .audios-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    
+    .audios-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .audio-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    
+    .audio-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .audio-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+    
+    .audio-content {
+        flex-grow: 1;
+    }
+    
+    .audio-content h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 1.2rem;
+    }
+    
+    .audio-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 15px;
+    }
+    
+    .audio-player {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 10px;
+    }
+    
+    .audio-player audio {
+        flex-grow: 1;
+    }
+    
+    .btn-audio-download {
+        padding: 8px 16px;
+        background: #2196F3;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        transition: background 0.3s;
+    }
+    
+    .btn-audio-download:hover {
+        background: #1976D2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- En-tête -->
+    <div class="audios-header">
+        <h1><i class="fas fa-music"></i> Tous nos Audios</h1>
+        <p>{{ audio_count }} audio{% if audio_count > 1 %}s{% endif %} disponibles</p>
+    </div>
+    
+    <!-- Liste d'audios -->
+    {% if audios %}
+    <div class="audios-list">
+        {% for audio in audios %}
+        <div class="audio-card">
+            <div class="audio-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            
+            <div class="audio-content">
+                <h3>{{ audio.titre }}</h3>
+                <div class="audio-meta">
+                    <span><i class="far fa-calendar"></i> {{ audio.date_creation|date:"d/m/Y" }}</span>
+                    <span><i class="far fa-clock"></i> {{ audio.duration|default:"3:45" }}</span>
+                    <span><i class="fas fa-download"></i> {{ audio.download_count|default:0 }}</span>
+                </div>
+                <p>{{ audio.contenu|truncatewords:30 }}</p>
+                
+                <div class="audio-player">
+                    {% if audio.audio %}
+                    <audio controls preload="metadata">
+                        <source src="{{ audio.audio.url }}" type="audio/mpeg">
+                        Votre navigateur ne supporte pas l'audio.
+                    </audio>
+                    <a href="{% url 'download_audio' audio.id %}" class="btn-audio-download">
+                        <i class="fas fa-download"></i> Télécharger
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination (identique à videos.html) -->
+    {% if is_paginated %}
+    <div class="pagination">
+        <!-- Même code de pagination que videos.html -->
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-section">
+        <i class="fas fa-music"></i>
+        <h3>Aucun audio disponible</h3>
+        <p>Revenez plus tard ou ajoutez des audios.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

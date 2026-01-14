@@ -1,0 +1,1130 @@
+<!-- templates/Fango/article_list.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            {% if page_title %}{{ page_title }} - Fango{% else %}Articles & Images - Construcam{% endif %}
+        {% endblock %}
+    </title>
+    
+    <!-- CSS de base -->
+    <style>
+        /* Reset et styles globaux */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #667eea;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Onglets de navigation */
+        .content-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        
+        .tab-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Contenu des onglets */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Filtres */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        /* Grilles */
+        .articles-grid, .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        /* Carte d'article */
+        .article-card, .image-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .article-card:hover, .image-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Média container */
+        .media-container {
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .media-container img,
+        .media-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .article-card:hover .media-container img,
+        .article-card:hover .media-container video,
+        .image-card:hover .media-container img {
+            transform: scale(1.05);
+        }
+        
+        /* Badge de média */
+        .media-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 2;
+        }
+        
+        .image-badge {
+            background: rgba(76, 175, 80, 0.9);
+        }
+        
+        .video-badge {
+            background: rgba(233, 30, 99, 0.9);
+        }
+        
+        .audio-badge {
+            background: rgba(156, 39, 176, 0.9);
+        }
+        
+        .article-badge {
+            background: rgba(33, 150, 243, 0.9);
+        }
+        
+        /* Contenu */
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #222;
+            line-height: 1.4;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-description {
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Boutons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 2;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        /* Galerie d'images spécifique */
+        .image-gallery {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .image-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .page-item {
+            list-style: none;
+        }
+        
+        .page-link {
+            display: block;
+            padding: 10px 18px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .page-link:hover {
+            background: #f8f8f8;
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .page-item.active .page-link {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Section vide */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            color: #888;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-empty {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-empty:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+            color: white;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .articles-grid, .images-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .content-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .card-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .image-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .page-header {
+                padding: 2rem 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .media-container {
+                height: 200px;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navigation">
+            <div class="logo">
+                <a href="/">
+                    <i class="fas fa-photo-video"></i>
+                    <span>Fango Media</span>
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Accueil
+                </a></li>
+                <li><a href="/articles/" class="{% if 'articles' in request.path %}active{% endif %}">
+                    <i class="fas fa-newspaper"></i> Articles
+                </a></li>
+                <li><a href="/images/" class="{% if 'images' in request.path %}active{% endif %}">
+                    <i class="fas fa-images"></i> Images
+                </a></li>
+                <li><a href="/galerie/" class="{% if 'galerie' in request.path %}active{% endif %}">
+                    <i class="fas fa-photo-video"></i> Galerie
+                </a></li>
+                <li><a href="/articles/create/">
+                    <i class="fas fa-plus-circle"></i> Créer
+                </a></li>
+                <li><a href="/apropos/">
+                    <i class="fas fa-info-circle"></i> À propos
+                </a></li>
+            </ul>
+        </nav>
+
+        <!-- En-tête de page -->
+        <header class="page-header">
+            <h1>
+                <i class="fas fa-photo-video"></i>
+                {% if page_title %}
+                    {{ page_title }}
+                {% else %}
+                    Articles & Images
+                {% endif %}
+            </h1>
+            <p>
+                {% if page_title == "Vidéos" %}
+                    Découvrez notre collection de vidéos
+                {% elif page_title == "Audios" %}
+                    Écoutez nos meilleurs contenus audio
+                {% elif page_title == "Images" %}
+                    Explorez notre galerie d'images
+                {% elif page_title == "Galerie" %}
+                    Tous nos médias en un seul endroit
+                {% else %}
+                    Parcourez tous nos articles et images
+                {% endif %}
+            </p>
+        </header>
+
+        <!-- Onglets de navigation -->
+        <div class="content-tabs">
+            <button class="tab-btn active" data-tab="articles">
+                <i class="fas fa-newspaper"></i> Articles
+                <span class="badge">{{ articles_count|default:0 }}</span>
+            </button>
+            <button class="tab-btn" data-tab="images">
+                <i class="fas fa-images"></i> Images
+                <span class="badge">{{ images_count|default:0 }}</span>
+            </button>
+            <button class="tab-btn" data-tab="videos">
+                <i class="fas fa-video"></i> Vidéos
+                <span class="badge">{{ videos_count|default:0 }}</span>
+            </button>
+            <button class="tab-btn" data-tab="audios">
+                <i class="fas fa-music"></i> Audios
+                <span class="badge">{{ audios_count|default:0 }}</span>
+            </button>
+        </div>
+
+        <!-- SECTION ARTICLES -->
+        <div class="tab-content active" id="articlesTab">
+            {% if articles %}
+                <div class="articles-grid">
+                    {% for article in articles %}
+                    <article class="article-card">
+                        <div class="media-container">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" alt="{{ article.titre }}" loading="lazy">
+                                <div class="media-badge article-badge">
+                                    <i class="fas fa-image"></i> IMAGE
+                                </div>
+                            {% elif article.video %}
+                                <video preload="metadata" onclick="playPause(this)">
+                                    <source src="{{ article.video.url }}" type="video/mp4">
+                                </video>
+                                <div class="media-badge video-badge">
+                                    <i class="fas fa-video"></i> VIDÉO
+                                </div>
+                            {% elif article.audio %}
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-music fa-3x"></i>
+                                </div>
+                                <div class="media-badge audio-badge">
+                                    <i class="fas fa-music"></i> AUDIO
+                                </div>
+                            {% else %}
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-file-alt fa-3x"></i>
+                                </div>
+                                <div class="media-badge article-badge">
+                                    <i class="fas fa-file-alt"></i> ARTICLE
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-content">
+                            <h3>{{ article.titre }}</h3>
+                            
+                            <div class="card-meta">
+                                <span>
+                                    <i class="far fa-calendar"></i>
+                                    {{ article.date_creation|date:"d/m/Y" }}
+                                </span>
+                                <span>
+                                    <i class="fas fa-user"></i>
+                                    {{ article.auteur|default:"Anonyme" }}
+                                </span>
+                            </div>
+                            
+                            <p class="card-description">
+                                {{ article.contenu|truncatechars:150|default:"Aucune description disponible." }}
+                            </p>
+                            
+                            <div class="card-actions">
+                                {% if article.slug %}
+                                <a href="{% url 'article_detail' article.slug %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Lire l'article
+                                </a>
+                                {% else %}
+                                <a href="#" class="btn btn-primary" onclick="alert('Article sans URL disponible')">
+                                    <i class="fas fa-eye"></i> Voir détails
+                                </a>
+                                {% endif %}
+                                
+                                {% if article.video %}
+                                    <a href="{% url 'download_video' article.id %}" class="btn btn-secondary" title="Télécharger la vidéo" onclick="trackDownload('video', {{ article.id }})">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                {% elif article.audio %}
+                                    <a href="{% url 'download_audio' article.id %}" class="btn btn-secondary" title="Télécharger l'audio" onclick="trackDownload('audio', {{ article.id }})">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-newspaper"></i>
+                    <h3>Aucun article disponible</h3>
+                    <p>Il n'y a pas encore d'articles publiés. Créez-en un pour commencer !</p>
+                    <a href="{% url 'article_create' %}" class="btn-empty">
+                        <i class="fas fa-plus"></i> Créer un article
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- SECTION IMAGES -->
+        <div class="tab-content" id="imagesTab">
+            <div class="image-gallery">
+                <!-- Statistiques images -->
+                <div class="image-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ images_count|default:0 }}</div>
+                        <div class="stat-label">Images</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ total_size|default:"0" }} MB</div>
+                        <div class="stat-label">Espace utilisé</div>
+                    </div>
+                    <div class="stat-card">
+                        <a href="{% url 'upload_image' %}" class="btn btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-upload"></i> Uploader une image
+                        </a>
+                    </div>
+                </div>
+
+                {% if images %}
+                    <div class="images-grid">
+                        {% for image in images %}
+                        <div class="image-card">
+                            <div class="media-container">
+                                <img src="{{ image.fichier.url }}" alt="{{ image.nom }}" loading="lazy">
+                                <div class="media-badge image-badge">
+                                    <i class="fas fa-image"></i> IMAGE
+                                </div>
+                            </div>
+                            
+                            <div class="card-content">
+                                <h3>{{ image.nom }}</h3>
+                                
+                                <div class="card-meta">
+                                    <span>
+                                        <i class="far fa-calendar"></i>
+                                        {{ image.date_upload|date:"d/m/Y" }}
+                                    </span>
+                                    <span>
+                                        <i class="far fa-clock"></i>
+                                        {{ image.date_upload|time:"H:i" }}
+                                    </span>
+                                </div>
+                                
+                                {% if image.description %}
+                                <p class="card-description">
+                                    {{ image.description|truncatechars:120 }}
+                                </p>
+                                {% endif %}
+                                
+                                <div class="card-actions">
+                                    <a href="{% url 'image_detail' image.id %}" class="btn btn-primary">
+                                        <i class="fas fa-expand"></i> Voir en grand
+                                    </a>
+                                    <a href="{{ image.fichier.url }}" class="btn btn-secondary" download title="Télécharger l'image">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-images"></i>
+                        <h3>Aucune image disponible</h3>
+                        <p>La galerie d'images est vide. Uploader votre première image !</p>
+                        <a href="{% url 'upload_image' %}" class="btn-empty">
+                            <i class="fas fa-upload"></i> Uploader une image
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- SECTION VIDEOS -->
+        <div class="tab-content" id="videosTab">
+            {% if articles_video %}
+                <div class="articles-grid">
+                    {% for article in articles_video %}
+                    <article class="article-card">
+                        <div class="media-container">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" alt="{{ article.titre }}" loading="lazy">
+                            {% endif %}
+                            <video preload="metadata" onclick="playPause(this)">
+                                <source src="{{ article.video.url }}" type="video/mp4">
+                            </video>
+                            <div class="media-badge video-badge">
+                                <i class="fas fa-video"></i> VIDÉO
+                            </div>
+                        </div>
+                        
+                        <div class="card-content">
+                            <h3>{{ article.titre }}</h3>
+                            
+                            <div class="card-meta">
+                                <span>
+                                    <i class="far fa-calendar"></i>
+                                    {{ article.date_creation|date:"d/m/Y" }}
+                                </span>
+                                <span>
+                                    <i class="far fa-clock"></i>
+                                    {{ article.date_creation|time:"H:i" }}
+                                </span>
+                            </div>
+                            
+                            <p class="card-description">
+                                {{ article.contenu|truncatechars:120|default:"Aucune description disponible." }}
+                            </p>
+                            
+                            <div class="card-actions">
+                                {% if article.slug %}
+                                <a href="{% url 'article_detail' article.slug %}" class="btn btn-primary">
+                                    <i class="fas fa-play"></i> Regarder
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'download_video' article.id %}" class="btn btn-secondary" title="Télécharger la vidéo">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-video-slash"></i>
+                    <h3>Aucune vidéo disponible</h3>
+                    <p>Il n'y a pas encore de vidéos dans notre collection.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- SECTION AUDIOS -->
+        <div class="tab-content" id="audiosTab">
+            {% if articles_audio %}
+                <div class="articles-grid">
+                    {% for article in articles_audio %}
+                    <article class="article-card">
+                        <div class="media-container">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" alt="{{ article.titre }}" loading="lazy">
+                            {% else %}
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-music fa-3x"></i>
+                                </div>
+                            {% endif %}
+                            <div class="media-badge audio-badge">
+                                <i class="fas fa-music"></i> AUDIO
+                            </div>
+                        </div>
+                        
+                        <div class="card-content">
+                            <h3>{{ article.titre }}</h3>
+                            
+                            <div class="card-meta">
+                                <span>
+                                    <i class="far fa-calendar"></i>
+                                    {{ article.date_creation|date:"d/m/Y" }}
+                                </span>
+                                <span>
+                                    <i class="fas fa-user"></i>
+                                    {{ article.auteur|default:"Anonyme" }}
+                                </span>
+                            </div>
+                            
+                            <p class="card-description">
+                                {{ article.contenu|truncatechars:120|default:"Aucune description disponible." }}
+                            </p>
+                            
+                            <div class="card-actions">
+                                {% if article.slug %}
+                                <a href="{% url 'article_detail' article.slug %}" class="btn btn-primary">
+                                    <i class="fas fa-play"></i> Écouter
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'download_audio' article.id %}" class="btn btn-secondary" title="Télécharger l'audio">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-music-slash"></i>
+                    <h3>Aucun audio disponible</h3>
+                    <p>Il n'y a pas encore d'audios dans notre collection.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Navigation des pages" class="pagination">
+            <ul style="display: flex; gap: 5px; list-style: none; margin: 0; padding: 0;">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            
+            <div style="margin-left: auto; color: #666; font-size: 0.9rem;">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+            </div>
+        </nav>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            &copy; {% now "Y" %} <strong>Fango Media Platform</strong>
+            <br>
+            <small>
+                <a href="/apropos/"><i class="fas fa-info-circle"></i> À propos</a> | 
+                <a href="/contact/"><i class="fas fa-envelope"></i> Contact</a> | 
+                <a href="/admin/"><i class="fas fa-cog"></i> Administration</a>
+            </small>
+        </p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page article_list.html chargée !');
+        
+        // Gestion des onglets
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Désactiver tous les onglets
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Activer l'onglet cliqué
+                button.classList.add('active');
+                document.getElementById(tabId + 'Tab').classList.add('active');
+                
+                // Mettre à jour l'URL
+                history.pushState({tab: tabId}, '', `#${tabId}`);
+            });
+        });
+        
+        // Charger l'onglet depuis l'URL hash
+        function loadFromHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const targetButton = document.querySelector(`.tab-btn[data-tab="${hash}"]`);
+                if (targetButton) {
+                    targetButton.click();
+                }
+            }
+        }
+        
+        // Auto-play des vidéos au survol
+        const videoCards = document.querySelectorAll('.article-card');
+        
+        videoCards.forEach(card => {
+            const video = card.querySelector('video');
+            if (video) {
+                card.addEventListener('mouseenter', function() {
+                    video.play().catch(e => {
+                        console.log('Auto-play bloqué');
+                    });
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    video.pause();
+                });
+            }
+        });
+        
+        // Charger l'onglet depuis l'URL
+        loadFromHash();
+        
+        // Gestion du bouton retour
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.tab) {
+                const targetButton = document.querySelector(`.tab-btn[data-tab="${event.state.tab}"]`);
+                if (targetButton) {
+                    targetButton.click();
+                }
+            }
+        });
+        
+        // Mettre à jour les compteurs
+        updateCounts();
+    });
+    
+    function playPause(video) {
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+    
+    function updateCounts() {
+        const articleCount = document.querySelectorAll('#articlesTab .article-card').length;
+        const imageCount = document.querySelectorAll('#imagesTab .image-card').length;
+        const videoCount = document.querySelectorAll('#videosTab .article-card').length;
+        const audioCount = document.querySelectorAll('#audiosTab .article-card').length;
+        
+        // Mettre à jour les badges si nécessaire
+        const badges = {
+            'articles': articleCount,
+            'images': imageCount,
+            'videos': videoCount,
+            'audios': audioCount
+        };
+        
+        for (const [tab, count] of Object.entries(badges)) {
+            const badge = document.querySelector(`.tab-btn[data-tab="${tab}"] .badge`);
+            if (badge) {
+                badge.textContent = count;
+            }
+        }
+    }
+    
+    // Gestion du téléchargement
+    function trackDownload(type, itemId) {
+        console.log(`Téléchargement ${type} ID: ${itemId}`);
+        // Envoyer une requête pour suivre les téléchargements
+        fetch('/api/track-download/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                type: type,
+                item_id: itemId,
+                timestamp: new Date().toISOString()
+            })
+        }).catch(error => console.error('Erreur tracking:', error));
+    }
+    
+    // Fonction utilitaire pour récupérer le cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Filtrage des images par tag
+    function filterImages(tag) {
+        const images = document.querySelectorAll('#imagesTab .image-card');
+        images.forEach(image => {
+            if (tag === 'all' || image.dataset.tags?.includes(tag)) {
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+        });
+    }
+    </script>
+</body>
+</html>

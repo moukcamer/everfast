@@ -1,0 +1,41 @@
+<!-- templates/Fango/section/image_detail.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ image.nom }} - Fango</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .image-container { text-align: center; margin: 20px 0; }
+        .image-container img { max-width: 100%; max-height: 600px; border-radius: 10px; }
+        .image-info { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>{{ image.nom }}</h1>
+    
+    <a href="{% url 'image_gallery' %}">← Retour à la galerie</a>
+    
+    <div class="image-container">
+        <img src="{{ image.fichier.url }}" alt="{{ image.nom }}">
+    </div>
+    
+    <div class="image-info">
+        <p><strong>Nom:</strong> {{ image.nom }}</p>
+        <p><strong>Date d'upload:</strong> {{ image.date_upload|date:"d/m/Y H:i" }}</p>
+        
+        {% if image.description %}
+        <p><strong>Description:</strong> {{ image.description }}</p>
+        {% endif %}
+        
+        {% if image.tags %}
+        <p><strong>Tags:</strong> {{ image.tags }}</p>
+        {% endif %}
+        
+        <p>
+            <a href="{{ image.fichier.url }}" download>Télécharger</a> | 
+            <a href="{% url 'image_gallery' %}">Retour à la galerie</a>
+        </p>
+    </div>
+</body>
+</html>
