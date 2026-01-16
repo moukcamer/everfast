@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construcam-Everfast </title>
+    <title>Everfast Connect - Application de Communication</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -310,8 +310,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--everfast-white);
-            font-size: 4rem;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
         }
         
         .product-content {
@@ -336,6 +346,53 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
+        }
+        
+        /* Gallery Section */
+        .gallery {
+            padding: 80px 0;
+            background-color: var(--everfast-white);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(25, 118, 210, 0.9));
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
         }
         
         /* CTA Section */
@@ -544,6 +601,7 @@
                     <ul>
                         <li><a href="#features">Fonctionnalités</a></li>
                         <li><a href="#products">Produits</a></li>
+                        <li><a href="#gallery">Galerie</a></li>
                         <li><a href="#download">Télécharger</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
@@ -625,7 +683,7 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fasfa-mobile-alt"></i>
+                        <i class="fas fa-mobile-alt"></i>
                     </div>
                     <h3>Application mobile</h3>
                     <p>Disponible sur iOS et Android pour un accès à l'information produit où que vous soyez.</p>
@@ -645,57 +703,113 @@
             <div class="products-grid">
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="fas fa-water"></i>
+                        <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 1 -->
+                        <img src="images/produit1-everfast.jpg" alt="Everfast Membrane - Produit d'étanchéité">
                     </div>
                     <div class="product-content">
                         <h3>Everfast Membrane</h3>
-                        <p>Membrane d'étanchéité haute performance pour toitures et terrasses</p>
+                        <p>Membrane d'étanchéité haute performance pour toitures et terrasses. Résistance exceptionnelle aux intempéries et aux UV.</p>
                         <div class="product-tags">
                             <span class="tag">Toiture</span>
                             <span class="tag">Étanchéité</span>
+                            <span class="tag">Haute performance</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="fas fa-tint-slash"></i>
+                        <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 2 -->
+                        <img src="images/produit2-everfast.jpg" alt="Everfast Joint - Mastic d'étanchéité">
                     </div>
                     <div class="product-content">
                         <h3>Everfast Joint</h3>
-                        <p>Mastic d'étanchéité pour joints de construction et fissures</p>
+                        <p>Mastic d'étanchéité pour joints de construction et fissures. Excellente élasticité et adhérence sur tous supports.</p>
                         <div class="product-tags">
                             <span class="tag">Joint</span>
                             <span class="tag">Réparation</span>
+                            <span class="tag">Élastique</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="fas fa-building"></i>
+                        <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 3 -->
+                        <img src="images/produit3-everfast.jpg" alt="Everfast Foundation - Étanchéité fondations">
                     </div>
                     <div class="product-content">
                         <h3>Everfast Foundation</h3>
-                        <p>Produit d'étanchéité pour fondations et ouvrages enterrés</p>
+                        <p>Produit d'étanchéité pour fondations et ouvrages enterrés. Protection optimale contre l'humidité et les infiltrations.</p>
                         <div class="product-tags">
                             <span class="tag">Fondation</span>
                             <span class="tag">Sous-sol</span>
+                            <span class="tag">Anti-humidité</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="fas fa-bridge"></i>
+                        <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 4 -->
+                        <img src="images/produit4-everfast.jpg" alt="Everfast Infrastructure - Étanchéité ouvrages d'art">
                     </div>
                     <div class="product-content">
                         <h3>Everfast Infrastructure</h3>
-                        <p>Système d'étanchéité pour ouvrages d'art et infrastructures</p>
+                        <p>Système d'étanchéité pour ouvrages d'art et infrastructures. Durabilité exceptionnelle même en conditions extrêmes.</p>
                         <div class="product-tags">
                             <span class="tag">Infrastructure</span>
                             <span class="tag">Ouvrage d'art</span>
+                            <span class="tag">Haute durabilité</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Galerie des produits Everfast</h2>
+                <p>Découvrez nos produits en situation réelle d'application</p>
+            </div>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 1 (vue d'application) -->
+                    <img src="images/application1-everfast.jpg" alt="Application de membrane Everfast">
+                    <div class="gallery-overlay">
+                        <h4>Application sur toiture</h4>
+                        <p>Membrane Everfast en application professionnelle</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 2 (vue d'application) -->
+                    <img src="images/application2-everfast.jpg" alt="Application de joint Everfast">
+                    <div class="gallery-overlay">
+                        <h4>Étanchéité de joints</h4>
+                        <p>Produit Everfast Joint en application</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 3 (vue d'application) -->
+                    <img src="images/application3-everfast.jpg" alt="Application sur fondation Everfast">
+                    <div class="gallery-overlay">
+                        <h4>Protection de fondations</h4>
+                        <p>Everfast Foundation appliqué sur mur enterré</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <!-- REMPLACEZ CETTE URL PAR VOTRE IMAGE 4 (vue d'application) -->
+                    <img src="images/application4-everfast.jpg" alt="Application infrastructure Everfast">
+                    <div class="gallery-overlay">
+                        <h4>Ouvrage d'art</h4>
+                        <p>Everfast Infrastructure sur pont</p>
                     </div>
                 </div>
             </div>
@@ -738,6 +852,7 @@
                     <ul>
                         <li><a href="#features">Fonctionnalités</a></li>
                         <li><a href="#products">Produits</a></li>
+                        <li><a href="#gallery">Galerie</a></li>
                         <li><a href="#download">Téléchargement</a></li>
                         <li><a href="#">Support technique</a></li>
                         <li><a href="#">Centre d'aide</a></li>
@@ -746,15 +861,15 @@
                 
                 <div class="footer-contact">
                     <h3>Contact</h3>
-                    <p><i class="fas fa-map-marker-alt"></i>  Rue des ecoles Akwa Douala</p>
-                    <p><i class="fas fa-phone"></i> +237 677 897 080</p>
-                    <p><i class="fas fa-envelope"></i> contrucjatalle@yahoo.fr</p>
-                    <p><i class="fas fa-clock"></i> Lun-Ven: 8h15-17h15h</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Rue de l'Étanchéité, 75000 Paris</p>
+                    <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+                    <p><i class="fas fa-envelope"></i> contact@everfast-connect.com</p>
+                    <p><i class="fas fa-clock"></i> Lun-Ven: 9h-18h</p>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2026 Construcam Everfast. Tous droits réservés. | <a href="#" style="color: #ccc;">Politique de confidentialité</a> | <a href="#" style="color: #ccc;">Conditions d'utilisation</a></p>
+                <p>&copy; 2023 Everfast Connect. Tous droits réservés. | <a href="#" style="color: #ccc;">Politique de confidentialité</a> | <a href="#" style="color: #ccc;">Conditions d'utilisation</a></p>
             </div>
         </div>
     </footer>
@@ -807,6 +922,14 @@
             card.style.transform = 'translateY(20px)';
             card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             observer.observe(card);
+        });
+        
+        // Apply animation to gallery items
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(item);
         });
         
         // Header shadow on scroll
